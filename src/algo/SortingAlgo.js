@@ -124,7 +124,6 @@ function doMerge(
 
   async function testSort(array){
     console.log(array)
-    array.setState({array})
   }
   
   function swap(arr, a, b) {

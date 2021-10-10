@@ -13,7 +13,6 @@ export default class SortingView extends React.Component {
       array: []
     };
   }
-
   componentDidMount() {
     this.resetArray();
   }
