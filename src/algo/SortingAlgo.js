@@ -97,28 +97,41 @@ function doMerge(
     }
   }
 
-function bubbleSort(arr){
-  
-  const  n = arr.length;
-  let swapped = true;
 
-  for (let i = 0; i < n && swapped; i++) {
 
-    swapped = false;
-    for (let j = 0; j < n - 1 - i; j++) {
-      if (arr[j] > arr[j + 1]) {
-        swapped = true;
-        swap(arr,j,j+1);
-        
+  function partition(arr, left, right) {
+    let pivot = arr[right]
+    // push arr[right]
+    let i = left - 1 
+    for (let j = left; j < right; j++) {
+      if (arr[j] < pivot) {
+        i++;
+        swap(arr, i, j)
       }
     }
+    swap(arr, i + 1, right)
+    return i + 1;
   }
-  return arr;
-}
+  
+  function quickSort(arr, left, right) {
+    if (left < right) {
+      let pi = partition(arr, left, right);
+      
+      quickSort(arr, left, pi-1);
+      quickSort(arr, pi+1, right)
+    }
+  }
 
-function swap(arr,a,b){
-  let temp = arr[a];
-  arr[a] = arr[b];
-  arr[b] = temp;
-}
-  export { mergeSort, bubbleSort }
+  async function testSort(array){
+    console.log(array)
+    array.setState({array})
+  }
+  
+  function swap(arr, a, b) {
+    let temp = arr[a];
+    arr[a] = arr[b];
+    arr[b] = temp;
+  }
+
+
+  export { mergeSort, quickSort, testSort}

@@ -1,6 +1,6 @@
 import React from 'react'
 import './SortingView.css'
-import { mergeSort, bubbleSort } from '../algo/SortingAlgo'
+import { mergeSort, testSort, quickSort } from '../algo/SortingAlgo'
 
 const PRIMARY_COLOR = 'aqua';
 
@@ -25,9 +25,69 @@ export default class SortingView extends React.Component {
     }
     this.setState({ array });
   }
+  async selectionsort(){
+    // this approach alters the state array directly for color and heights instead of making extra animation array
+    const arrayBars = document.getElementsByClassName('array-bar')
+    let arr = this.state.array;
+    console.log(arr)
+    const n = arr.length;
+    let swapped = true;
+    
+    for(let i = 0; i< n && swapped; i++){
+      const barOneStyle = arrayBars[i].style;
+      await timeout(1)
+      barOneStyle.backgroundColor = SECONDARY_COLOR
+      swapped = false;
+      for(let j = i+1; j < n; j++){
+        await timeout(1)
+        const barTwoStyle = arrayBars[j].style;
+        barTwoStyle.backgroundColor = SECONDARY_COLOR
 
+        if(arr[i]> arr[j]){
+          swapped = true;
+          await swap(arr, i,j)
+          this.setState({arr})
+        }
+        await timeout(1)
+        barTwoStyle.backgroundColor = PRIMARY_COLOR
+      }
+      await timeout(1)
+      barOneStyle.backgroundColor = PRIMARY_COLOR
+    }
+    console.log(arr)
+  }
+  async insertionsort(){
+    // this approach alters the state array directly for color and heights instead of making extra animation array
+    const arrayBars = document.getElementsByClassName('array-bar')
+    let arr = this.state.array;
+
+    const n = arr.length;
+
+    for(let i = 0; i< n; i++){
+      const barOneStyle = arrayBars[i].style;
+      await timeout(1)
+      barOneStyle.backgroundColor = SECONDARY_COLOR;
+      let key = arr[i];
+      let j = i-1;
+
+      while(j>=0 && arr[j]>key){
+        const barTwoStyle = arrayBars[j].style;
+        arr[j+1] = arr[j]
+        j=j-1
+        this.setState({arr})
+        await timeout(1)
+        barTwoStyle.backgroundColor = SECONDARY_COLOR;
+        await timeout(1)
+        barTwoStyle.backgroundColor = PRIMARY_COLOR;
+      }
+      arr[j+1] = key
+      await timeout(1)
+      barOneStyle.backgroundColor = PRIMARY_COLOR;
+    }
+    console.log(arr)
+  }
   async bubblesort() {
-    // this approach alters the state array
+    // this approach alters the state array directly for color and heights instead of making extra animation array
 
     const arrayBars = document.getElementsByClassName('array-bar')
     let arr = this.state.array;
@@ -52,14 +112,19 @@ export default class SortingView extends React.Component {
     }
   }
 
+  async quicksort(){
+    const arrayBars = document.getElementsByClassName('array-bar')
+    let arr = this.state.array;
+    const n = arr.length;
+    quickSort(arr,0,n-1)
+    console.log(arr)
+    this.setState({arr})
+  }
   tester() {
-    const array = [];
-    console.log({ array })
-    console.log(array)
-    this.setState({ array });
+    testSort(this.state.array)
   }
   mergesort() {
-    //this approach does not alter the state array instead alters the DOM height element
+    //this approach does not alter the state array directly, instead it creates an extra animation array to track animation progress.
     
     const animations = mergeSort(this.state.array);
     console.log(animations)
@@ -101,6 +166,9 @@ export default class SortingView extends React.Component {
         <button onClick={() => this.resetArray()}>Refresh Array</button>
         <button onClick={() => this.mergesort()}>MergeSort</button>
         <button onClick={() => this.bubblesort()}>BubbleSort</button>
+        <button onClick={() => this.selectionsort()}>SelectionSort</button>
+        <button onClick={() => this.insertionsort()}>InsertionSort</button>
+        <button onClick={() => this.quicksort()}>QuickSort</button>
         <button onClick={() => this.tester()}>tester</button>
 
       </div>
@@ -112,8 +180,7 @@ function randomIntFromInterval(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-async function  swap(arr,a,b){
-  await timeout(2)
+function  swap(arr,a,b){
   let temp = arr[a];
   arr[a] = arr[b];
   arr[b] = temp;
